@@ -1,0 +1,110 @@
+{
+  "name": "shex",
+  "version": "0.7.0",
+  "description": "Shape Expressions library compatible with N3 and SPARQL.js.",
+  "author": {
+    "name": "Eric Prud'hommeaux",
+    "email": "eric@w3.org",
+    "url": "http://www.w3.org/People/Eric/"
+  },
+  "keywords": [
+    "shex",
+    "shape expressions",
+    "rdf",
+    "query",
+    "parser"
+  ],
+  "license": "MIT",
+  "main": "./shex.js",
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "dependencies": {
+    "command-line-args": "^2.1.6",
+    "jsonld": "^0.4.11",
+    "koa": "^1.2.0",
+    "koa-body": "^1.4.0",
+    "mocha": "^3.1.2",
+    "n3": "^0.4.5",
+    "promise": "^7.1.1",
+    "request-promise": "0.4.3",
+    "shex-test": "^0.7.0"
+  },
+  "devDependencies": {
+    "eslint": "^3.x",
+    "jison": "0.4.16",
+    "mocha": "2.5.3",
+    "chai": "1.9.x",
+    "pre-commit": "~1.1.3",
+    "browserify": "~13.x",
+    "uglify-js": "~2.4.3"
+  },
+  "bin": [
+    "bin/json-to-shex",
+    "bin/shex-to-json",
+    "bin/validate",
+    "bin/partition"
+  ],
+  "scripts": {
+    "make": "(cd test/ && make test)",
+    "test": "./node_modules/.bin/mocha -C -R dot",
+    "lint": "eslint test/findPath.js",
+    "browser": "node browser/build-browser-versions",
+    "coverage": "istanbul cover node_modules/.bin/_mocha -- -R spec --timeout 100"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shexSpec/grammar.git"
+  },
+  "bugs": {
+    "url": "https://github.com/shexSpec/grammar/issues"
+  },
+  "testling": {
+    "files": "test/*.js",
+    "harness": "mocha",
+    "browsers": [
+      "firefox/24..latest",
+      "chrome/29..latest"
+    ]
+  },
+  "pre-commit": [
+    "lint",
+    "test"
+  ],
+  "eslintConfig": {
+    "rules": {
+      "indent": [
+        2,
+        2
+      ],
+      "quotes": [
+        2,
+        "double"
+      ],
+      "linebreak-style": [
+        2,
+        "unix"
+      ],
+      "semi": [
+        2,
+        "always"
+      ],
+      "strict": [
+        2,
+        "never"
+      ],
+      "no-multi-spaces": 0,
+      "key-spacing": 0
+    },
+    "env": {
+      "node": true,
+      "browser": true
+    },
+    "extends": "eslint:recommended",
+    "globals": {
+      "it": true,
+      "should": true,
+      "describe": true
+    }
+  }
+}
