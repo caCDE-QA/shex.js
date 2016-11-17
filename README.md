@@ -1,30 +1,62 @@
 # shex.js
 shex.js javascript implementation of Shape Expressions
 
+This is cloned from the the TEisSE branch of [shexSpec/shex.js](https://github.com/shexSpec/shex.js/commit/f9b37f93f46b324b50661c235e0f1921d3bb15cc). Its purpose
+is to be a static image of the shex.js validation tools at the point that the paper, tentatively titled 
+"Modeling and Validating HL7 FHIR Profiles Using Semantic Web Shape Expressions (ShEx)" was written (version 1.5 as of November 17, 2016).
+
+## Notes
+The pre-commit hook doesn't currently pass.  It depends on a semi-independent repository [shexTest](https://github.com/shexSpec/shexTest) which doesn't appear to be fully synced
+with this code.  If you need to update this repository, use the `-n` git commit option.
+
 ## install
 
-```
-npm install --save shex
-```
-
-## test
-
-```
-(cd node_modules/shex && npm test) # assumming it was installed in ./node_nodules
+```bash
+> git clone https://github.com/caCDE-QA/shex.js
+> cd shex.js
+> npm install --save
 ```
 
-This runs `mocha -R dot` because there are around one thousand tests.
 
 ## validation
 
-You can validate RDF data using the executable `bin/validate` or the `lib/ShExValidation` library described below.
+You can validate RDF data using the executable `bin/validate` 
+
+## REST Service
+
+Starting a REST server:
+
+```
+./bin/validate -S http://localhost:4290/validate
+
+Visit http://localhost:4290/ in browser.
+
+Test with a supplied schema and data:
+  curl -i http://localhost:4290/validate -F "schema=@test/cli/1dotOr2dot.shex" -F "shape=http://a.example/S1" -F "data=@test/cli/p2p3.ttl" -F "node=x"
+or preload the schema and just supply the data:
+  bin/validate -x test/cli/1dotOr2dot.shex -s http://a.example/S1 -S  http://localhost:4290/validate
+and pass only the data parameters:
+  curl -i http://localhost:4290/validate -F "data=@test/cli/p2p3.ttl" -F "node=x"
+Note that shape and node can be relative or prefixed URLs.
+
+Press CTRL+C to stop...
+```
+
+The following command is what is needed to use shex.js as a FHIR ShEx validations service:
+
+```
+./bin/validate -S http://localhost:4290/validate --regex-module nfax-val-1err --duplicate-shape ignore
+```
+
+The `regex-module` argument addresses an issue where the server takes an inordinate amount of time to validate certain FHIR types and the
+`duplicate-shape` argument addresses a bug in the STU3 ShExGenerator where definitions for the starting resource are emitted more than once.
 
 ###  validation executable
 
 Validate something in HTTP-land:
 
 ```
-./node_modules/shex/bin/validate \
+./bin/validate \
     -x http://shex.io/examples/Issue.shex \
     -d http://shex.io/examples/Issue1.ttl \
     -s http://shex.io/examples/IssueShape \
@@ -55,7 +87,7 @@ The above invocation validates the node `<Issue1>` in `http://shex.io/examples/I
 This and the shape can be written as relative IRIs:
 
 ```
-./node_modules/shex/bin/validate \
+./bin/validate \
     -x http://shex.io/examples/Issue.shex \
     -d http://shex.io/examples/Issue1.ttl \
     -s IssueShape \
@@ -170,7 +202,7 @@ or in JSON:
 
 You can convert between them with shex-to-json:
 ```
-./node_modules/shex/bin/shex-to-json http://shex.io/examples/Issue.shex
+./bin/shex-to-json http://shex.io/examples/Issue.shex
 ```
 and, less elegantly, back with json-to-shex.
 
@@ -195,11 +227,11 @@ There's no actual conversion; the JSON representation is just the stringificatio
 Command line arguments which don't start with http:// or https:// are assumed to be file paths.
 We can create a local JSON version of the Issues schema:
 ```
-./node_modules/shex/bin/shex-to-json http://shex.io/examples/Issue.shex > Issue.json
+./bin/shex-to-json http://shex.io/examples/Issue.shex > Issue.json
 ```
 and use it to validate the Issue1.ttl as we did above:
 ```
-./node_modules/shex/bin/validate \
+./bin/validate \
     -j Issue.json \
     -d http://shex.io/examples/Issue1.ttl \
     -s http://shex.io/examples/IssueShape \
